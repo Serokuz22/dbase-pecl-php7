@@ -536,7 +536,7 @@ static void php_dbase_get_record(INTERNAL_FUNCTION_PARAMETERS, int assoc)
 						add_assoc_long(return_value, cur_f->db_fname,strtol("1", NULL, 10));
 					}
 				} else {
-					if ((*str_value == 'F') || (*str_value == 'N')) {
+					if ((*str_value == 'F') || (*str_value == 'N') || (*str_value == 'I')) {
 						if (!assoc) {
 							add_next_index_long(return_value, strtol("0", NULL, 10));
 						} else {
@@ -713,6 +713,7 @@ PHP_FUNCTION(dbase_create)
 			cur_f->db_flen = 20;
 			break;
 		case 'N':
+		case 'I':
 		case 'C':
 			/* field length */
 			if ((value = zend_hash_index_find(Z_ARRVAL_P(field), 2)) == NULL) {
@@ -723,7 +724,7 @@ PHP_FUNCTION(dbase_create)
 			convert_to_long_ex(value);
 			cur_f->db_flen = Z_LVAL_P(value);
 
-			if (cur_f->db_type == 'N') {
+			if (cur_f->db_type == 'N' || cur_f->db_type == 'I') {
 				if ((value = zend_hash_index_find(Z_ARRVAL_P(field), 3)) == NULL) {
 					php_error_docref(NULL TSRMLS_CC, E_WARNING, "expected field precision as fourth element of list in field %d", i);
 					free_dbf_head(dbh);
